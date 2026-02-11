@@ -19,7 +19,7 @@ insert_final_newline = false
 
 # Project files
 [*.{csproj,vbproj,vcxproj,vcxproj.filters,proj,projitems,shproj}]
-indent_size = 2
+indent_size = 4
 
 # Config files
 [*.{props,targets,ruleset,config,nuspec,resx,vsixmanifest,vsct,xml,tasks}]
@@ -261,6 +261,7 @@ csharp_space_between_square_brackets = false
 # Wrapping preferences
 csharp_preserve_single_line_blocks = true
 csharp_preserve_single_line_statements = true
+csharp_prefer_system_threading_lock = true:suggestion
 
 
 #### VB Code Style ####
