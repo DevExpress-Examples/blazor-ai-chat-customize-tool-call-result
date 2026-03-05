@@ -1,0 +1,85 @@
+﻿@page "/"
+
+@using DxAiChatCustomToolCallingChartReport.Services
+@using DxAiChatCustomToolCallingChartReport.Models
+@using DevExpress.AIIntegration.Tools
+
+@inject HelpDeskDataService HelpDeskService
+@inject AIToolsContextContainer AIToolsContainer
+@implements IDisposable
+
+<PageTitle>AI Chat</PageTitle>
+
+<DxAIChat UseStreaming="true"
+          ResponseReceived="OnResponseReceived">
+    <MessageContentTemplate>
+        @context.Content
+
+        @if (chartDataByMessage.TryGetValue(context, out var chartData))
+        {
+            <DxChart Data="@chartData" Width="100%" Height="300px"
+                     CustomizeSeriesPoint="OnCustomizePoint">
+                <DxChartBarSeries ArgumentField="@((ChartReportData d) => d.Label)"
+                                  ValueField="@((ChartReportData d) => d.Value)"
+                                  Name="Tickets" />
+                <DxChartLegend Visible="false" />
+            </DxChart>
+        }
+    </MessageContentTemplate>
+    <PromptSuggestions>
+        <DxAIChatPromptSuggestion Title="Feedback Chart"
+                                  Text="Show Help Desk feedback chart"
+                                  PromptMessage="What are our latest Help Desk ticket feedback ratings?"
+                                  SendOnClick="true" />
+        <DxAIChatPromptSuggestion Title="Positive and Negative comparative chart"
+                                  Text="Show only positive and negative feedback"
+                                  PromptMessage="Show Help Desk feedback chart including only Positive and Negative, exclude Neutral."
+                                  SendOnClick="true" />
+    </PromptSuggestions>
+</DxAIChat>
+
+@code {
+    private AIToolsContext? toolsContext;
+    private readonly Dictionary<BlazorChatMessage, List<ChartReportData>> chartDataByMessage = new();
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            toolsContext = new AIToolsContextBuilder()
+                .WithToolTarget(HelpDeskService, "The Help Desk data service.")
+                .WithToolMethods(HelpDeskAITools.GetFeedbackChart)
+                .Build();
+
+            AIToolsContainer.Add(toolsContext);
+        }
+    }
+
+    private void OnResponseReceived(ResponseReceivedEventArgs args)
+    {
+        var data = HelpDeskAITools.ConsumePendingChartData();
+
+        if (data != null && data.Count > 0)
+        {
+            chartDataByMessage[args.Message] = data;
+        }
+    }
+
+    private void OnCustomizePoint(ChartSeriesPointCustomizationSettings settings)
+    {
+        var label = settings.Point.Argument?.ToString();
+
+        if (label == "Positive")
+            settings.PointAppearance.Color = System.Drawing.Color.Green;
+        else if (label == "Negative")
+            settings.PointAppearance.Color = System.Drawing.Color.Red;
+        else if (label == "Neutral")
+            settings.PointAppearance.Color = System.Drawing.Color.Orange;
+    }
+
+    public void Dispose()
+    {
+        AIToolsContainer.Remove(toolsContext);
+        toolsContext?.Dispose();
+    }
+}
