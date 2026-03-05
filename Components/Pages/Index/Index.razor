@@ -3,8 +3,10 @@
 @using DxAiChatCustomToolCallingChartReport.Services
 @using DxAiChatCustomToolCallingChartReport.Models
 @using DevExpress.AIIntegration.Tools
+
 @inject HelpDeskDataService HelpDeskService
 @inject AIToolsContextContainer AIToolsContainer
+@implements IDisposable
 
 <PageTitle>AI Chat</PageTitle>
 
@@ -73,5 +75,11 @@
             settings.PointAppearance.Color = System.Drawing.Color.Red;
         else if (label == "Neutral")
             settings.PointAppearance.Color = System.Drawing.Color.Orange;
+    }
+
+    public void Dispose()
+    {
+        AIToolsContainer.Remove(toolsContext);
+        toolsContext?.Dispose();
     }
 }
