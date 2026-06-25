@@ -1,10 +1,10 @@
 # Blazor AI Chat — Customize Tool Calling Result
 
-DevExpress Blazor [AI Chat](https://docs.devexpress.com/Blazor/405290) can query live enterprise data through natural language. You can register custom AI tools that aggregate Help Desk ticket feedback and render the results as an interactive bar chart directly inside chat responses.
+DevExpress Blazor [AI Chat](https://docs.devexpress.com/Blazor/405290) can query live enterprise data using natural language. You can register custom AI tools that aggregate Help Desk ticket feedback and display results as an interactive bar chart directly inside chat responses.
 
 ![Customize Tool Calling Result](ai-chat-tool-call-customize.png)
 
-The sample app leverages the following DevExpress Blazor components:
+The sample app relies on the following DevExpress Blazor components:
 
 - [DxAIChat](https://docs.devexpress.com/Blazor/DevExpress.AIIntegration.Blazor.Chat.DxAIChat)
 - [DxChart](https://docs.devexpress.com/Blazor/DevExpress.Blazor.Charts.DxChart)
@@ -13,7 +13,7 @@ The sample app leverages the following DevExpress Blazor components:
 
 ## Setup and Configuration
 
-To run this sample, configure project dependencies and set up secure authentication for Azure OpenAI.
+To run this sample, restore project dependencies and set up secure authentication for Azure OpenAI.
 
 ### Required Packages
 
@@ -71,7 +71,7 @@ builder.Services.AddDevExpressAI();
 
 The [HelpDeskAITools](CS/Services/HelpDeskAITools.cs) class defines the AI tool - a static method decorated with `[AIIntegrationTool]` that the AI model can invoke when the user asks about feedback data. The tool accepts an optional `categories` filter to control which feedback types appear in the chart.
 
-The tool stores aggregated chart data in a static `PendingChartData` property. After the AI response is received, [Index.razor](CS/Components/Pages/Index/Index.razor) calls `ConsumePendingChartData()` to retrieve and clear the data for rendering:
+The tool stores aggregated chart data in a static `PendingChartData` property. After the AI response is received,  `ConsumePendingChartData()` retrieves and clears the data for rendering:
 
 ```csharp
 [AIIntegrationTool("HelpDesk_GetFeedbackChart")]
@@ -86,7 +86,7 @@ public static string GetFeedbackChart(
 }
 ```
 
-AI tool is registered in [Index.razor](CS/Components/Pages/Index/Index.razor) on first render using `AIToolsContextBuilder`:
+AI tool is registered in [Index.razor](CS/Components/Pages/Index/Index.razor) on the first render using `AIToolsContextBuilder`:
 
 ```csharp
 toolsContext = new AIToolsContextBuilder()
