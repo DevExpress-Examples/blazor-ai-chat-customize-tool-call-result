@@ -86,7 +86,7 @@ public static string GetFeedbackChart(
 }
 ```
 
-AI tool is registered in [Index.razor](CS/Components/Pages/Index/Index.razor) on first render using `AIToolsContextBuilder`:
+AI tool is registered in [Index.razor](CS/Components/Pages/Index/Index.razor) on the first render using `AIToolsContextBuilder`:
 
 ```csharp
 toolsContext = new AIToolsContextBuilder()
