@@ -13,7 +13,7 @@ The sample app relies on the following DevExpress Blazor components:
 
 ## Setup and Configuration
 
-To run this sample, configure project dependencies and set up secure authentication for Azure OpenAI.
+To run this sample, restore project dependencies and set up secure authentication for Azure OpenAI.
 
 ### Required Packages
 
