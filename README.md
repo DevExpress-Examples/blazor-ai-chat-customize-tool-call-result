@@ -71,7 +71,7 @@ builder.Services.AddDevExpressAI();
 
 The [HelpDeskAITools](CS/Services/HelpDeskAITools.cs) class defines the AI tool - a static method decorated with `[AIIntegrationTool]` that the AI model can invoke when the user asks about feedback data. The tool accepts an optional `categories` filter to control which feedback types appear in the chart.
 
-The tool stores aggregated chart data in a static `PendingChartData` property. After the AI response is received, [Index.razor](CS/Components/Pages/Index/Index.razor) calls `ConsumePendingChartData()` to retrieve and clear the data for rendering:
+The tool stores aggregated chart data in a static `PendingChartData` property. After the AI response is received,  `ConsumePendingChartData()` retrieves and clears the data for rendering:
 
 ```csharp
 [AIIntegrationTool("HelpDesk_GetFeedbackChart")]
