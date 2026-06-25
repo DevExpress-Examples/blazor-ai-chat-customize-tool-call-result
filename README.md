@@ -4,7 +4,7 @@ DevExpress Blazor [AI Chat](https://docs.devexpress.com/Blazor/405290) can query
 
 ![Customize Tool Calling Result](ai-chat-tool-call-customize.png)
 
-The sample app leverages the following DevExpress Blazor components:
+The sample app relies on the following DevExpress Blazor components:
 
 - [DxAIChat](https://docs.devexpress.com/Blazor/DevExpress.AIIntegration.Blazor.Chat.DxAIChat)
 - [DxChart](https://docs.devexpress.com/Blazor/DevExpress.Blazor.Charts.DxChart)
