@@ -1,6 +1,6 @@
 # Blazor AI Chat — Customize Tool Calling Result
 
-DevExpress Blazor [AI Chat](https://docs.devexpress.com/Blazor/405290) can query live enterprise data using natural language. You can register custom AI tools that aggregate Help Desk ticket feedback and display results as an interactive bar chart directly inside chat responses.
+DevExpress Blazor [AI Chat](https://docs.devexpress.com/Blazor/405290) can query live enterprise data using natural language. You can register custom AI tools designed to aggregate Help Desk ticket feedback and display results as an interactive bar chart directly inside chat responses.
 
 ![Customize Tool Calling Result](ai-chat-tool-call-customize.png)
 
@@ -71,7 +71,7 @@ builder.Services.AddDevExpressAI();
 
 The [HelpDeskAITools](CS/Services/HelpDeskAITools.cs) class defines the AI tool - a static method decorated with `[AIIntegrationTool]` that the AI model can invoke when the user asks about feedback data. The tool accepts an optional `categories` filter to control which feedback types appear in the chart.
 
-The tool stores aggregated chart data in a static `PendingChartData` property. After the AI response is received,  `ConsumePendingChartData()` retrieves and clears the data for rendering:
+The tool stores aggregated chart data in a static `PendingChartData` property. After receiving the AI response, `ConsumePendingChartData()` retrieves and clears the data for rendering:
 
 ```csharp
 [AIIntegrationTool("HelpDesk_GetFeedbackChart")]
@@ -119,7 +119,7 @@ The [AI Chat](CS/Components/Pages/Index/Index.razor) component uses the [Message
 </DxAIChat>
 ```
 
-Chart bars are color-coded by feedback category using [CustomizeSeriesPoint](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxChartBase.CustomizeSeriesPoint)`: green for Positive, red for Negative, and orange for Neutral.
+Bars are color-coded by feedback category using [CustomizeSeriesPoint](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxChartBase.CustomizeSeriesPoint)`: green for Positive, red for Negative, and orange for Neutral.
 
 ### Help Desk Data Service
 
@@ -129,7 +129,7 @@ Chart bars are color-coded by feedback category using [CustomizeSeriesPoint](htt
 
 [Index.razor](CS/Components/Pages/Index/Index.razor) includes two [prompt suggestions](https://docs.devexpress.com/Blazor/DevExpress.AIIntegration.Blazor.Chat.DxAIChatPromptSuggestion) to guide users toward the chart-generating queries:
 
-- **Feedback Chart** — asks for a full feedback breakdown across all categories.
+- **Feedback Chart** — asks for full feedback breakdown across all categories.
 - **Positive vs. Negative Chart** — filters the chart to compare Positive and Negative ratings.
 
 ## Files to Review
