@@ -1,3 +1,9 @@
+<!-- default badges list -->
+![](https://img.shields.io/endpoint?url=https://codecentral.devexpress.com/api/v1/VersionRange/1155472982/25.2.4%2B)
+[![](https://img.shields.io/badge/Open_in_DevExpress_Support_Center-FF7200?style=flat-square&logo=DevExpress&logoColor=white)](https://supportcenter.devexpress.com/ticket/details/T1331917)
+[![](https://img.shields.io/badge/📖_How_to_use_DevExpress_Examples-e9f6fc?style=flat-square)](https://docs.devexpress.com/GeneralInformation/403183)
+[![](https://img.shields.io/badge/💬_Leave_Feedback-feecdd?style=flat-square)](#does-this-example-address-your-development-requirementsobjectives)
+<!-- default badges end -->
 # Blazor AI Chat — Customize Tool Calling Result
 
 DevExpress Blazor [AI Chat](https://docs.devexpress.com/Blazor/405290) can query live enterprise data using natural language. You can register custom AI tools designed to aggregate Help Desk ticket feedback and display results as an interactive bar chart directly inside chat responses.
@@ -157,3 +163,10 @@ Bars are color-coded by feedback category using [CustomizeSeriesPoint](https://d
 
 - [DevExpress Blazor AI Chat — Implement Function/Tool Calling](https://github.com/DevExpress-Examples/blazor-ai-chat-function-calling)
 - [Blazor AI Chat — Confirm Tool Calls](https://github.com/DevExpress-Examples/blazor-ai-chat-confirm-tool-calls)
+<!-- feedback -->
+## Does This Example Address Your Development Requirements/Objectives?
+
+[<img src="https://www.devexpress.com/support/examples/i/yes-button.svg"/>](https://www.devexpress.com/support/examples/survey.xml?utm_source=github&utm_campaign=blazor-ai-chat-customize-tool-call-result&~~~was_helpful=yes) [<img src="https://www.devexpress.com/support/examples/i/no-button.svg"/>](https://www.devexpress.com/support/examples/survey.xml?utm_source=github&utm_campaign=blazor-ai-chat-customize-tool-call-result&~~~was_helpful=no)
+
+(you will be redirected to DevExpress.com to submit your response)
+<!-- feedback end -->
