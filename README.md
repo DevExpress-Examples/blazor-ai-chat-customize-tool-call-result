@@ -45,7 +45,8 @@ Secrets are stored in [appsettings.json](CS/appsettings.json). Update the follow
 The following code in [Program.cs](CS/Program.cs) retrieves the Azure OpenAI configuration and registers the chat client with tool support:
 
 ```csharp
-var openAiServiceSettings = builder.Configuration.GetSection("AzureOpenAISettings").Get<AzureOpenAIServiceSettings>();
+var openAiServiceSettings = builder.Configuration.GetSection("AzureOpenAISettings")
+    .Get<AzureOpenAIServiceSettings>();
 
 var azureOpenAIClient = new AzureOpenAIClient(
     new Uri(openAiServiceSettings.Endpoint),
