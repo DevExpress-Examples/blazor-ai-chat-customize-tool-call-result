@@ -4,14 +4,14 @@ using DxAiChatCustomToolCallingChartReport.Models;
 
 namespace DxAiChatCustomToolCallingChartReport.Services {
     public class HelpDeskAITools {
-        const string GetFeedbackChartToolDescrtiption =
-            "Returns a feedback summary chart showing how many tickets are Positive, Negative, and Neutral." +
-            "Use when the user asks about feedback or ratings." +
-            $"The categories parameter filters which feedback categories to display (e.g. [\"{HelpDeskDataService.PositiveFeedbackLabel}\", \"{HelpDeskDataService.NeutralFeedbackLabel}\"] to exclude {HelpDeskDataService.NegativeFeedbackLabel})." +
+        const string GetFeedbackChartToolDescription =
+            "Returns a feedback summary chart showing how many tickets are Positive, Negative, and Neutral. " +
+            "Use when the user asks about feedback or ratings. " +
+            $"The categories parameter filters which feedback categories to display (e.g. [\"{HelpDeskDataService.PositiveFeedbackLabel}\", \"{HelpDeskDataService.NeutralFeedbackLabel}\"] to exclude {HelpDeskDataService.NegativeFeedbackLabel}). " +
             "If empty or not specified, all categories are shown.";
 
         const string GetFeedbackChartToolFilterDescription =
-            $"Feedback categories to include in the chart, e.g. [\"{HelpDeskDataService.PositiveFeedbackLabel}\", \"{HelpDeskDataService.NegativeFeedbackLabel}\", \"{HelpDeskDataService.NeutralFeedbackLabel}\"]." +
+            $"Feedback categories to include in the chart, e.g. [\"{HelpDeskDataService.PositiveFeedbackLabel}\", \"{HelpDeskDataService.NegativeFeedbackLabel}\", \"{HelpDeskDataService.NeutralFeedbackLabel}\"]. " +
             "Leave empty to include all.";
 
         public const string GetFeedbackChartToolName = "HelpDesk_GetFeedbackChart";
@@ -23,7 +23,7 @@ namespace DxAiChatCustomToolCallingChartReport.Services {
         }
 
         [AIIntegrationTool(GetFeedbackChartToolName)]
-        [Description(GetFeedbackChartToolDescrtiption)]
+        [Description(GetFeedbackChartToolDescription)]
         public List<ChartReportData> GetFeedbackChart([Description(GetFeedbackChartToolFilterDescription)] string[] categories) {
             var summary = dataService.GetFeedbackSummary();
 

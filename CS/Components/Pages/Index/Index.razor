@@ -42,13 +42,13 @@
 
     private static bool TryGetChartData(BlazorChatMessage message, out List<ChartReportData> chartData)
     {
-        JsonElement? jsondRepresentation = message
+        JsonElement? jsonRepresentation = message
             .FunctionCalls
             .FirstOrDefault(fc => fc.Request?.Name == HelpDeskAITools.GetFeedbackChartToolName)?
             .Result?
             .Result as System.Text.Json.JsonElement?;
 
-        chartData = jsondRepresentation?.Deserialize<List<ChartReportData>>() ?? [];
+        chartData = jsonRepresentation?.Deserialize<List<ChartReportData>>() ?? [];
 
         return chartData.Count > 0;
     }

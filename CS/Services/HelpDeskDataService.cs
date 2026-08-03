@@ -19,7 +19,7 @@ namespace DxAiChatCustomToolCallingChartReport.Services
             for (int i = 1; i <= count; i++)
             {
                 tickets.Add(new HelpDeskTicket
-                {   
+                {
                     Id = i,
                     Feedback = feedbackTypes[random.Next(feedbackTypes.Length)]
                 });
