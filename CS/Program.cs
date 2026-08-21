@@ -18,6 +18,7 @@ builder.Services.AddDevExpressBlazor(options =>
 builder.Services.AddMvc();
 
 builder.Services.AddSingleton<HelpDeskDataService>();
+builder.Services.AddScoped<HelpDeskAITools>();
 
 var openAiServiceSettings = builder.Configuration.GetSection("AzureOpenAISettings").Get<AzureOpenAIServiceSettings>();
 if (openAiServiceSettings == null ||

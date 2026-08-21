@@ -1,23 +1,21 @@
 ﻿@page "/"
 
+@using System.Text.Json
+@using DevExpress.AIIntegration.Tools
 @using DxAiChatCustomToolCallingChartReport.Services
 @using DxAiChatCustomToolCallingChartReport.Models
-@using DevExpress.AIIntegration.Tools
 
-@inject HelpDeskDataService HelpDeskService
+@inject HelpDeskAITools helpDeskAITools
 @inject AIToolsContextContainer AIToolsContainer
 @implements IDisposable
 
 <PageTitle>AI Chat</PageTitle>
 
-<DxAIChat UseStreaming="true"
-          ShowHeader="true"
-          ResponseReceived="OnResponseReceived">
+<DxAIChat UseStreaming="true" ShowHeader="true">
     <MessageContentTemplate>
         @context.Content
 
-        @if (chartDataByMessage.TryGetValue(context, out var chartData))
-        {
+        @if (TryGetChartData(context, out var chartData)) {
             <DxChart Data="@chartData" Width="100%" Height="300px"
                      CustomizeSeriesPoint="OnCustomizePoint">
                 <DxChartBarSeries ArgumentField="@((ChartReportData d) => d.Label)"
@@ -41,41 +39,47 @@
 
 @code {
     private AIToolsContext? toolsContext;
-    private readonly Dictionary<BlazorChatMessage, List<ChartReportData>> chartDataByMessage = new();
+
+    private static bool TryGetChartData(BlazorChatMessage message, out List<ChartReportData> chartData)
+    {
+        JsonElement? jsonRepresentation = message
+            .FunctionCalls
+            .FirstOrDefault(fc => fc.Request?.Name == HelpDeskAITools.GetFeedbackChartToolName)?
+            .Result?
+            .Result as System.Text.Json.JsonElement?;
+
+        chartData = jsonRepresentation?.Deserialize<List<ChartReportData>>() ?? [];
+
+        return chartData.Count > 0;
+    }
+
+    private void OnCustomizePoint(ChartSeriesPointCustomizationSettings settings) {
+        var label = settings.Point.Argument?.ToString();
+
+        switch (label)
+        {
+            case HelpDeskDataService.PositiveFeedbackLabel:
+                settings.PointAppearance.Color = System.Drawing.Color.Green;
+                break;
+            case HelpDeskDataService.NegativeFeedbackLabel:
+                settings.PointAppearance.Color = System.Drawing.Color.Red;
+                break;
+            case HelpDeskDataService.NeutralFeedbackLabel:
+                settings.PointAppearance.Color = System.Drawing.Color.Orange;
+                break;
+        }
+    }
 
     protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender)
         {
             toolsContext = new AIToolsContextBuilder()
-                .WithToolTarget(HelpDeskService, "The Help Desk data service.")
-                .WithToolMethods(HelpDeskAITools.GetFeedbackChart)
+                .WithToolMethods(helpDeskAITools.GetFeedbackChart)
                 .Build();
 
             AIToolsContainer.Add(toolsContext);
         }
-    }
-
-    private void OnResponseReceived(ResponseReceivedEventArgs args)
-    {
-        var data = HelpDeskAITools.ConsumePendingChartData();
-
-        if (data != null && data.Count > 0)
-        {
-            chartDataByMessage[args.Message] = data;
-        }
-    }
-
-    private void OnCustomizePoint(ChartSeriesPointCustomizationSettings settings)
-    {
-        var label = settings.Point.Argument?.ToString();
-
-        if (label == "Positive")
-            settings.PointAppearance.Color = System.Drawing.Color.Green;
-        else if (label == "Negative")
-            settings.PointAppearance.Color = System.Drawing.Color.Red;
-        else if (label == "Neutral")
-            settings.PointAppearance.Color = System.Drawing.Color.Orange;
     }
 
     public void Dispose()
