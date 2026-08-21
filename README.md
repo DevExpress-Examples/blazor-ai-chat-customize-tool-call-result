@@ -6,7 +6,7 @@
 <!-- default badges end -->
 # Blazor AI Chat — Customize Tool Calling Result
 
-DevExpress Blazor [AI Chat](https://docs.devexpress.com/Blazor/405290) can query live enterprise data using natural language. You can register custom AI tools designed to aggregate Help Desk ticket feedback and display results as an interactive bar chart directly inside chat responses.
+DevExpress Blazor [AI Chat](https://docs.devexpress.com/Blazor/405290) can query live enterprise data using natural language. In this example, a custom AI tool returns structured help desk feedback data, and the chat UI renders the result as an inline chart.
 
 ![Customize Tool Calling Result](ai-chat-tool-call-customize.png)
 
@@ -32,7 +32,7 @@ We use the following versions of Microsoft AI packages in this project:
 | [Azure.AI.OpenAI](https://www.nuget.org/packages/Azure.AI.OpenAI)                               | 2.3.0-beta.2            |
 
 > [!NOTE]
-> We cannot guarantee compatibility or correct execution with newer versions. Refer to the following announcement for additional information: [DevExpress.AIIntegration references stable versions of Microsoft AI packages](https://supportcenter.devexpress.com/ticket/details/t1292705/devexpress-aiintegration-references-stable-versions-of-microsoft-ai-packages).
+> We cannot guarantee compatibility or correct execution with newer versions. Refer to the following announcement for additional information: [DevExpress.AIIntegration references stable versions of Microsoft.Extensions.AI packages](https://community.devexpress.com/blogs/aspnet/archive/2025/08/20/devexpress-aiintegration-references-stable-versions-of-microsoft-extensions-ai-packages.aspx).
 
 ### Register AI Services
 
@@ -69,6 +69,8 @@ builder.Services.AddScoped<IChatClient>((sp) => {
         .Build(sp);
 });
 
+builder.Services.AddSingleton<HelpDeskDataService>();
+builder.Services.AddScoped<HelpDeskAITools>();
 builder.Services.AddDevExpressAI();
 ```
 
@@ -76,44 +78,36 @@ builder.Services.AddDevExpressAI();
 
 ### Custom Tool Calling
 
-The [HelpDeskAITools](CS/Services/HelpDeskAITools.cs) class defines the AI tool - a static method decorated with `[AIIntegrationTool]` that the AI model can invoke when the user asks about feedback data. The tool accepts an optional `categories` filter to control which feedback types appear in the chart.
-
-The tool stores aggregated chart data in a static `PendingChartData` property. After receiving the AI response, `ConsumePendingChartData()` retrieves and clears the data for rendering:
+The [HelpDeskAITools](CS/Services/HelpDeskAITools.cs) class defines the AI tool as an instance method. The tool is registered through dependency injection and returns a `List<ChartReportData>` directly.
 
 ```csharp
-[AIIntegrationTool("HelpDesk_GetFeedbackChart")]
-[Description("Returns a feedback summary chart...")]
-public static string GetFeedbackChart(
-    [AIIntegrationToolTarget("The help desk data service.")] HelpDeskDataService dataService,
-    [Description("Feedback categories to include...")] string[] categories) {
+[AIIntegrationTool(GetFeedbackChartToolName)]
+[Description(GetFeedbackChartToolDescription)]
+public List<ChartReportData> GetFeedbackChart(
+    [Description(GetFeedbackChartToolFilterDescription)] string[] categories) {
     var summary = dataService.GetFeedbackSummary();
-    // ...filter and store chart data
-    PendingChartData = summary;
-    return string.Join(", ", summary.Select(s => $"{s.Label}: {s.Value}"));
+
+    if (categories != null && categories.Length > 0) {
+        var filter = new HashSet<string>(categories, StringComparer.OrdinalIgnoreCase);
+        summary = summary.Where(s => filter.Contains(s.Label)).ToList();
+    }
+
+    return summary;
 }
 ```
 
-AI tool is registered in [Index.razor](CS/Components/Pages/Index/Index.razor) on the first render using `AIToolsContextBuilder`:
-
-```csharp
-toolsContext = new AIToolsContextBuilder()
-    .WithToolTarget(HelpDeskService, "The Help Desk data service.")
-    .WithToolMethods(HelpDeskAITools.GetFeedbackChart)
-    .Build();
-
-AIToolsContainer.Add(toolsContext);
-```
+The tool uses named feedback labels from [HelpDeskDataService.cs](CS/Services/HelpDeskDataService.cs) so the prompt and filtering logic stay in sync.
 
 ### Inline Chart Rendering
 
-The [AI Chat](CS/Components/Pages/Index/Index.razor) component uses the [MessageContentTemplate](https://docs.devexpress.com/Blazor/DevExpress.AIIntegration.Blazor.Chat.DxAIChat.MessageContentTemplate) property to conditionally render a [bar chart](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxChart-1.-ctor) below the AI text response whenever chart data is available for that message:
+The [AI Chat](CS/Components/Pages/Index/Index.razor) component renders the assistant message inside `MessageContentTemplate`, then reads the function call result from `BlazorChatMessage.FunctionCalls` and deserializes it into chart data.
 
 ```razor
-<DxAIChat UseStreaming="true" ShowHeader="true" ResponseReceived="OnResponseReceived">
+<DxAIChat UseStreaming="true" ShowHeader="true">
     <MessageContentTemplate>
         @context.Content
-        @if (chartDataByMessage.TryGetValue(context, out var chartData))
-        {
+
+        @if (TryGetChartData(context, out var chartData)) {
             <DxChart Data="@chartData" Width="100%" Height="300px"
                      CustomizeSeriesPoint="OnCustomizePoint">
                 <DxChartBarSeries ArgumentField="@((ChartReportData d) => d.Label)"
@@ -126,15 +120,17 @@ The [AI Chat](CS/Components/Pages/Index/Index.razor) component uses the [Message
 </DxAIChat>
 ```
 
-Bars are color-coded by feedback category using [CustomizeSeriesPoint](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxChartBase.CustomizeSeriesPoint)`: green for Positive, red for Negative, and orange for Neutral.
+This approach avoids the earlier `ResponseReceived`/static-state pattern and keeps chart rendering tied to the actual tool result for each chat message.
+
+Bars are color-coded by feedback category using [CustomizeSeriesPoint](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxChartBase.CustomizeSeriesPoint): green for Positive, red for Negative, and orange for Neutral.
 
 ### Help Desk Data Service
 
-[HelpDeskDataService.cs](CS/Services/HelpDeskDataService.cs) generates 100 randomized `HelpDeskTicket` records on startup (using a fixed seed for reproducibility) and exposes a `GetFeedbackSummary()` method that groups tickets by feedback type and returns a list of `ChartReportData` label/value pairs.
+[HelpDeskDataService.cs](CS/Services/HelpDeskDataService.cs) generates 100 randomized `HelpDeskTicket` records on startup (using a fixed seed for reproducibility) and exposes a `GetFeedbackSummary()` method. The service also defines shared label constants used by the tool and chart rendering logic.
 
 ### Prompt Suggestions
 
-[Index.razor](CS/Components/Pages/Index/Index.razor) includes two [prompt suggestions](https://docs.devexpress.com/Blazor/DevExpress.AIIntegration.Blazor.Chat.DxAIChatPromptSuggestion) to guide users toward the chart-generating queries:
+[Index.razor](CS/Components/Pages/Index/Index.razor) includes two [prompt suggestions](https://docs.devexpress.com/Blazor/DevExpress.AIIntegration.Blazor.Chat.DxAIChatPromptSuggestion) to guide users:
 
 - **Feedback Chart** — asks for full feedback breakdown across all categories.
 - **Positive vs. Negative Chart** — filters the chart to compare Positive and Negative ratings.
