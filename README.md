@@ -120,7 +120,6 @@ The [AI Chat](CS/Components/Pages/Index/Index.razor) component renders the assis
 </DxAIChat>
 ```
 
-This approach avoids the earlier `ResponseReceived`/static-state pattern and keeps chart rendering tied to the actual tool result for each chat message.
 
 Bars are color-coded by feedback category using [CustomizeSeriesPoint](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxChartBase.CustomizeSeriesPoint): green for Positive, red for Negative, and orange for Neutral.
 
