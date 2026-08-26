@@ -32,7 +32,7 @@ We use the following versions of Microsoft AI packages in this project:
 | [Azure.AI.OpenAI](https://www.nuget.org/packages/Azure.AI.OpenAI)                               | 2.3.0-beta.2            |
 
 > [!NOTE]
-> We cannot guarantee compatibility or correct execution with newer versions. Refer to the following announcement for additional information: [DevExpress.AIIntegration references stable versions of Microsoft.Extensions.AI packages](https://community.devexpress.com/blogs/aspnet/archive/2025/08/20/devexpress-aiintegration-references-stable-versions-of-microsoft-extensions-ai-packages.aspx).
+> We cannot guarantee compatibility or correct execution with newer versions. Refer to the following blog post for additional information: [DevExpress.AIIntegration references stable versions of Microsoft.Extensions.AI packages](https://community.devexpress.com/blogs/aspnet/archive/2025/08/20/devexpress-aiintegration-references-stable-versions-of-microsoft-extensions-ai-packages.aspx).
 
 ### Register AI Services
 
@@ -96,11 +96,11 @@ public List<ChartReportData> GetFeedbackChart(
 }
 ```
 
-The tool uses named feedback labels from [HelpDeskDataService.cs](CS/Services/HelpDeskDataService.cs) so the prompt and filtering logic stay in sync.
+The tool uses named feedback labels from [HelpDeskDataService.cs](CS/Services/HelpDeskDataService.cs) to keep the prompt and filtering logic in sync.
 
 ### Inline Chart Rendering
 
-The [AI Chat](CS/Components/Pages/Index/Index.razor) component renders the assistant message inside [MessageContentTemplate](https://docs.devexpress.com/Blazor/DevExpress.AIIntegration.Blazor.Chat.DxAIChat.MessageContentTemplate), then reads the function call result from `BlazorChatMessage.FunctionCalls` and deserializes it into chart data.
+The [AI Chat](CS/Components/Pages/Index/Index.razor) component displays the assistant message within [MessageContentTemplate](https://docs.devexpress.com/Blazor/DevExpress.AIIntegration.Blazor.Chat.DxAIChat.MessageContentTemplate), obtains the function call result from `BlazorChatMessage.FunctionCalls`, and deserializes it into chart data.
 
 ```razor
 <DxAIChat UseStreaming="true" ShowHeader="true">
