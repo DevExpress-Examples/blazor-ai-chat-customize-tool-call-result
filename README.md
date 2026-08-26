@@ -6,7 +6,7 @@
 <!-- default badges end -->
 # Blazor AI Chat — Customize Tool Calling Result
 
-DevExpress Blazor [AI Chat](https://docs.devexpress.com/Blazor/405290) can query live enterprise data using natural language. In this example, a custom AI tool returns structured help desk feedback data, and the chat UI renders the result as an inline chart.
+DevExpress Blazor [AI Chat](https://docs.devexpress.com/Blazor/405290) can query live enterprise data using natural language. In this example, a custom AI tool returns structured help desk feedback data, and the chat UI displays the result as an inline chart.
 
 ![Customize Tool Calling Result](ai-chat-tool-call-customize.png)
 
