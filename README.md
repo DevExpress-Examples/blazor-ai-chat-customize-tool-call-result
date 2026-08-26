@@ -100,7 +100,7 @@ The tool uses named feedback labels from [HelpDeskDataService.cs](CS/Services/He
 
 ### Inline Chart Rendering
 
-The [AI Chat](CS/Components/Pages/Index/Index.razor) component renders the assistant message inside `MessageContentTemplate`, then reads the function call result from `BlazorChatMessage.FunctionCalls` and deserializes it into chart data.
+The [AI Chat](CS/Components/Pages/Index/Index.razor) component renders the assistant message inside [MessageContentTemplate](https://docs.devexpress.com/Blazor/DevExpress.AIIntegration.Blazor.Chat.DxAIChat.MessageContentTemplate), then reads the function call result from `BlazorChatMessage.FunctionCalls` and deserializes it into chart data.
 
 ```razor
 <DxAIChat UseStreaming="true" ShowHeader="true">
