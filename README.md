@@ -78,7 +78,7 @@ builder.Services.AddDevExpressAI();
 
 ### Custom Tool Calling
 
-The [HelpDeskAITools](CS/Services/HelpDeskAITools.cs) class defines the AI tool as an instance method, so it can use constructor-injected services ([HelpDeskDataService](#help-desk-data-service)) to fetch live data.  [Program.cs](CS/Program.cs) registers this AI tool as a scoped service. The tool's method returns structured `List<ChartReportData>`.
+The [HelpDeskAITools](CS/Services/HelpDeskAITools.cs) class defines the AI tool as an instance method, so that it can use constructor-injected services ([HelpDeskDataService](#help-desk-data-service)) to fetch live data.  [Program.cs](CS/Program.cs) registers this AI tool as a scoped service. The tool's `GetFeedbackChart` method returns the chart data as a list of `ChartReportData` objects.
 
 ```csharp
 [AIIntegrationTool(GetFeedbackChartToolName)]
