@@ -6,7 +6,7 @@
 <!-- default badges end -->
 # Blazor AI Chat — Customize Tool Calling Result
 
-DevExpress Blazor [AI Chat](https://docs.devexpress.com/Blazor/405290) can query live enterprise data using natural language. In this example, a custom AI tool returns structured help desk feedback data, and the chat UI displays the result as an inline chart.
+DevExpress Blazor [AI Chat](https://docs.devexpress.com/Blazor/405290) can query live enterprise data using natural language. In this example, a custom AI tool returns structured help desk feedback data, and the chat UI displays the result within an inline chart.
 
 ![Customize Tool Calling Result](ai-chat-tool-call-customize.png)
 
@@ -78,7 +78,7 @@ builder.Services.AddDevExpressAI();
 
 ### Custom Tool Calling
 
-The [HelpDeskAITools](CS/Services/HelpDeskAITools.cs) class defines the AI tool as an instance method, so that it can use constructor-injected services ([HelpDeskDataService](#help-desk-data-service)) to fetch live data.  [Program.cs](CS/Program.cs) registers this AI tool as a scoped service. The tool's `GetFeedbackChart` method returns the chart data as a list of `ChartReportData` objects.
+The [HelpDeskAITools](CS/Services/HelpDeskAITools.cs) class defines the AI tool as an instance method, so that it can use constructor-injected services ([HelpDeskDataService](#help-desk-data-service)) to fetch live data. [Program.cs](CS/Program.cs) registers this AI tool as a scoped service. The tool's `GetFeedbackChart` method returns the chart data as a list of `ChartReportData` objects.
 
 ```csharp
 [AIIntegrationTool(GetFeedbackChartToolName)]
@@ -119,7 +119,6 @@ The [AI Chat](CS/Components/Pages/Index/Index.razor) component displays the assi
     </MessageContentTemplate>
 </DxAIChat>
 ```
-
 
 Bars are color-coded by feedback category using [CustomizeSeriesPoint](https://docs.devexpress.com/Blazor/DevExpress.Blazor.DxChartBase.CustomizeSeriesPoint): green for Positive, red for Negative, and orange for Neutral.
 
